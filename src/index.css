@@ -2,11 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "deadfrog";
+  src: url("./assets/fonts/Deadfrog.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 1080px;
+  width: 1920px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  margin: 0 auto;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
 body {
-  background-image: url("/src/assets/dungeon.jpg");
+  background-image: url("/src/assets/images/dungeon.jpg");
   background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: 1920px 1680px;
+  background-size: 1920px 1080px;
   background-position: center;
   background-color: black;
+  font-family: "deadfrog", sans-serif;
 }

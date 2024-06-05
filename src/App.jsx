@@ -5,20 +5,25 @@ import Character from "./pages/Character/Character";
 import Profile from "./pages/Profile/Profile";
 import Dungeons from "./pages/Dungeons/Dungeons";
 import Ranking from "./pages/Ranking/Ranking";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 function App() {
   return (
-    <>
+    <div className="relative h-[1080px] w-[1920px]">
       <Router>
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/character" element={<Character />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/dungeons" element={<Dungeons />} />
           <Route path="/ranking" element={<Ranking />} />
+          <Route path="*" element={<Home />} />
         </Routes>
+        <Footer />
       </Router>
-    </>
+    </div>
   );
 }
 

@@ -199,7 +199,7 @@ const Home = () => {
             )}
             <div className="mt-5">
               <button
-                className="w-full rounded-lg bg-blue-600 px-4 py-2 text-center text-base font-semibold text-white shadow-md transition duration-200 ease-in hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-200"
+                className="w-full rounded-lg border-2 border-white bg-black px-4 py-2 text-center text-base font-semibold text-white shadow-md transition duration-200 ease-in hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-200"
                 type="submit"
               >
                 {isLogin ? "Log in" : "Sign up"}
