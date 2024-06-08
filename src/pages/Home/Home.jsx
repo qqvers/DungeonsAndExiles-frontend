@@ -71,9 +71,8 @@ const Home = () => {
       );
       const data = await response.json();
       if (response.ok && isLogin) {
-        localStorage.setItem("token", data.token.token);
-        localStorage.setItem("tokenExpiration", data.token.expiration);
-        localStorage.setItem("refreshToken", data.refreshToken);
+        localStorage.setItem("access_token", data.token.token);
+        localStorage.setItem("refresh_token", data.refreshToken);
         navigate("/profile");
       } else if (response.ok && !isLogin) {
         setCreated(true);

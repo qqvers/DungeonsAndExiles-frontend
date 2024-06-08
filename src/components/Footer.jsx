@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <>
       {String(pathname) !== "/" && (
-        <footer className="absolute bottom-0 w-[1920px] bg-black/70">
+        <footer className="absolute bottom-0 z-50 w-[1920px] bg-black/70">
           <div className="mx-auto w-full p-4 sm:max-w-screen-xl md:flex md:items-center md:justify-between">
             <span className="text-sm text-gray-300 sm:text-center dark:text-gray-400">
               © 2024{" "}

@@ -37,3 +37,12 @@ body {
   background-color: black;
   font-family: "deadfrog", sans-serif;
 }
+
+.customShadow {
+  -webkit-box-shadow: 0 0 5px #ca8a04;
+  box-shadow: 0 0 5px #ca8a04;
+}
+
+.loading-bar {
+  animation: loading 10s linear;
+}
