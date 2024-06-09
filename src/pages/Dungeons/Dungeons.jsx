@@ -6,6 +6,7 @@ const Dungeons = () => {
   const [attackStatus, setAttackStatus] = useState(false);
   const [cooldown, setCooldown] = useState(false);
   const [progress, setProgress] = useState(0);
+  const controllerRef = useRef(null);
   const currentMonsterRef = useRef(null);
   const intervalRef = useRef(null);
   const fetchData = async () => {
@@ -30,25 +31,42 @@ const Dungeons = () => {
   }, []);
 
   const handleAttack = async (monster) => {
-    loadingBarAnimation();
     try {
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+        controllerRef.current = null;
+        return;
+      }
       setAttackStatus(true);
       setCooldown(true);
       currentMonsterRef.current = monster;
+      loadingBarAnimation();
       setTimeout(() => setCooldown(false), 10000);
-      // const response = await fnFetchWithAuth(
-      //   `players/${playerId}/monsters/${monsterId}`,
-      // );
-      // if (response.ok) {
-      //   const data = await response.json();
-      //   console.log(data);
-      // } else {
-      //   setAttackStatus(false);
-      //   console.error("Failed to attack monster", response.status);
-      // }
+
+      controllerRef.current = new AbortController();
+      const signal = controllerRef.current.signal;
+      const playerId = localStorage.getItem("selectedPlayerId");
+      const response = await fnFetchWithAuth(
+        `/players/${playerId}/monsters/${monster.id}`,
+        {
+          method: "POST",
+          signal,
+        },
+      );
+      if (response.ok) {
+        const data = await response.text();
+        console.log(data);
+      } else {
+        setAttackStatus(false);
+        console.error("Failed to attack monster", response.status);
+      }
     } catch (error) {
       setAttackStatus(false);
-      console.error("Error:", error);
+      if (error.name === "AbortError") {
+        console.log("Request aborted");
+      } else {
+        console.error("Error:", error);
+      }
     }
   };
 
@@ -98,7 +116,7 @@ const Dungeons = () => {
 
             <button
               className="h-8 w-36 rounded-md border-2 border-gray-700 bg-black text-yellow-600 hover:border-white"
-              onClick={() => setAttackStatus(false)}
+              onClick={() => handleAttack(currentMonsterRef.current)}
             >
               Run away
             </button>
@@ -127,7 +145,7 @@ const Dungeons = () => {
             </div>
           </div>
           <button
-            className={`m-auto h-8 w-24 rounded-md border-2 bg-black ${!cooldown ? "border-red-500 text-red-500 hover:border-red-600 hover:text-red-600" : "border-gray-500 text-gray-500"}`}
+            className={`m-auto h-8 w-24 rounded-md border-2 bg-black ${!cooldown ? "border-red-500 text-red-500 hover:border-red-600 hover:text-red-600" : "cursor-not-allowed border-gray-500 text-gray-500"}`}
             onClick={() => handleAttack(monster)}
             disabled={cooldown}
           >

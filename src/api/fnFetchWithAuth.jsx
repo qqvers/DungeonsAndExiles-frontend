@@ -41,6 +41,7 @@ const refreshAccessToken = async () => {
   }
   const decodedToken = jwtDecode(token);
   const userId = decodedToken.sub;
+  localStorage.setItem("userId", userId);
   const response = await fetch(apiUrl + "/users/" + userId + "/refresh", {
     method: "POST",
     headers: {

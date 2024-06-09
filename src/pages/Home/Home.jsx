@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const Home = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -73,6 +74,9 @@ const Home = () => {
       if (response.ok && isLogin) {
         localStorage.setItem("access_token", data.token.token);
         localStorage.setItem("refresh_token", data.refreshToken);
+        const decodedToken = jwtDecode(data.token.token);
+        const userId = decodedToken.sub;
+        localStorage.setItem("userId", userId);
         navigate("/profile");
       } else if (response.ok && !isLogin) {
         setCreated(true);

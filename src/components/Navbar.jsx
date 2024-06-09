@@ -30,7 +30,7 @@ const Navbar = () => {
   return (
     <>
       {String(pathname) !== "/" && (
-        <nav className="fixed z-50 w-[1920px] bg-black/90">
+        <nav className="fixed z-50 bg-black/90 md:w-[1300px] xl:w-[1600px] 2xl:w-[1920px]">
           <div className="max-w-7xl px-2 sm:mx-auto sm:px-6 lg:px-8">
             <div className="relative flex h-16 items-start justify-between sm:items-center">
               <div className="flex flex-1 items-center justify-start sm:items-stretch">
@@ -77,7 +77,7 @@ const Navbar = () => {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <div className="relative ml-3">
+                <div className="relative ml-3 hidden sm:block">
                   <div>
                     <NavLink to="/" className={logoutStyles}>
                       Logout
