@@ -150,7 +150,7 @@ const Profile = () => {
                     className="mb-2 mt-1 w-full rounded-lg border bg-gray-800 px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                     type="text"
                     id="name"
-                    value={formData.name}
+                    value={formData.name ? formData.name : ""}
                     onChange={handleChange}
                     required
                   />

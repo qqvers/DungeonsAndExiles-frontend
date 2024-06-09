@@ -4,7 +4,7 @@ import Home from "./pages/Home/Home";
 import Character from "./pages/Character/Character";
 import Profile from "./pages/Profile/Profile";
 import Dungeons from "./pages/Dungeons/Dungeons";
-import Ranking from "./pages/Ranking/Ranking";
+import Leaderboard from "./pages/Leaderboard/Leaderboard";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -18,7 +18,7 @@ function App() {
           <Route path="/character" element={<Character />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/dungeons" element={<Dungeons />} />
-          <Route path="/ranking" element={<Ranking />} />
+          <Route path="/Leaderboard" element={<Leaderboard />} />
           <Route path="*" element={<Home />} />
         </Routes>
         <Footer />
