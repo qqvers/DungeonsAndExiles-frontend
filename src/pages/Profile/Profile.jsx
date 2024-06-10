@@ -98,8 +98,9 @@ const Profile = () => {
     fetchData();
   }, []);
 
-  const handleSelectPlayer = (playerId) => {
-    localStorage.setItem("selectedPlayerId", playerId);
+  const handleSelectPlayer = (player) => {
+    localStorage.setItem("selectedPlayerId", player.id);
+    localStorage.setItem("player", JSON.stringify(player));
     navigate("/character");
   };
 
@@ -116,7 +117,7 @@ const Profile = () => {
           <div
             key={player.id}
             className="relative mx-[10px] mb-4 flex h-[120px] cursor-pointer flex-col items-center justify-center border-2 border-dashed border-gray-400 bg-gray-800 text-white hover:bg-gray-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onClick={() => handleSelectPlayer(player.id)}
+            onClick={() => handleSelectPlayer(player)}
           >
             <RiDeleteBin6Line
               size={20}

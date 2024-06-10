@@ -6,17 +6,20 @@ const Dungeons = () => {
   const [attackStatus, setAttackStatus] = useState(false);
   const [cooldown, setCooldown] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const controllerRef = useRef(null);
   const currentMonsterRef = useRef(null);
   const intervalRef = useRef(null);
+
   const fetchData = async () => {
     try {
       const response = await fnFetchWithAuth("/monsters");
       if (response.ok) {
         const data = await response.json();
-        const sortedData = data.sort(function (a, b) {
-          return parseFloat(a.level) - parseFloat(b.level);
-        });
+        const sortedData = data.sort(
+          (a, b) => parseFloat(a.level) - parseFloat(b.level),
+        );
         setMonsters(sortedData);
       } else {
         console.error("Failed to fetch data", response.status);
@@ -55,7 +58,8 @@ const Dungeons = () => {
       );
       if (response.ok) {
         const data = await response.text();
-        console.log(data);
+        setModalMessage(data);
+        setModalVisible(true);
       } else {
         setAttackStatus(false);
         console.error("Failed to attack monster", response.status);
@@ -123,13 +127,31 @@ const Dungeons = () => {
           </div>
         </div>
       )}
+      {modalVisible && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85">
+          <div className="customShadow flex h-[200px] w-[300px] flex-col items-center justify-center gap-4 rounded-md bg-black p-4">
+            <p className="text-4xl text-yellow-500">{modalMessage}</p>
+            <p className="text-[12px] italic text-yellow-500">
+              {modalMessage === "You won"
+                ? "check your inventory, maybe you found something..."
+                : "sadly..."}
+            </p>
+            <button
+              className="h-8 w-24 rounded-md border-2 border-gray-700 bg-black text-yellow-600 hover:border-white"
+              onClick={() => setModalVisible(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
       {monsters.map((monster) => (
         <div
           key={monster.id}
           className="customShadow mb-8 grid h-96 w-64 cursor-default justify-center rounded-lg bg-black/50 backdrop-blur-lg"
         >
           <div className="mt-12">
-            <h1 className="w-[150px] text-2xl">{monster.name}</h1>
+            <h1 className="w-[200px] text-2xl">{monster.name}</h1>
             {monster.image && (
               <img
                 src={`data:image/jpeg;base64,${monster.image}`}
@@ -145,7 +167,11 @@ const Dungeons = () => {
             </div>
           </div>
           <button
-            className={`m-auto h-8 w-24 rounded-md border-2 bg-black ${!cooldown ? "border-red-500 text-red-500 hover:border-red-600 hover:text-red-600" : "cursor-not-allowed border-gray-500 text-gray-500"}`}
+            className={`m-auto h-8 w-24 rounded-md border-2 bg-black ${
+              !cooldown
+                ? "border-red-500 text-red-500 hover:border-red-600 hover:text-red-600"
+                : "cursor-not-allowed border-gray-500 text-gray-500"
+            }`}
             onClick={() => handleAttack(monster)}
             disabled={cooldown}
           >
