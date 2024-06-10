@@ -42,6 +42,14 @@ const Navbar = () => {
                 <div className="hidden 2xl:ml-6 2xl:block">
                   <div className="flex space-x-4">
                     <NavLink
+                      to="/account"
+                      className={({ isActive }) =>
+                        isActive ? selectedOptionStyles : unselectedOptionStyles
+                      }
+                    >
+                      Account
+                    </NavLink>
+                    <NavLink
                       to="/profile"
                       className={({ isActive }) =>
                         isActive ? selectedOptionStyles : unselectedOptionStyles
@@ -100,6 +108,15 @@ const Navbar = () => {
               )}
               {showMenu && (
                 <>
+                  {" "}
+                  <NavLink
+                    to="/account"
+                    className={({ isActive }) =>
+                      isActive ? selectedOptionStyles : unselectedOptionStyles
+                    }
+                  >
+                    Account
+                  </NavLink>
                   <NavLink
                     to="/profile"
                     className={({ isActive }) =>

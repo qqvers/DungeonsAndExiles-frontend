@@ -7,6 +7,7 @@ import Dungeons from "./pages/Dungeons/Dungeons";
 import Leaderboard from "./pages/Leaderboard/Leaderboard";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import Account from "./pages/Account/Account";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/account" element={<Account />} />
           <Route path="/character" element={<Character />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/dungeons" element={<Dungeons />} />
