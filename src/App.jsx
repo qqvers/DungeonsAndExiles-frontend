@@ -8,6 +8,7 @@ import Leaderboard from "./pages/Leaderboard/Leaderboard";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Account from "./pages/Account/Account";
+import ErrorPage from "./pages/ErrorPage/ErrorPage";
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/dungeons" element={<Dungeons />} />
           <Route path="/Leaderboard" element={<Leaderboard />} />
-          <Route path="*" element={<Home />} />
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
         <Footer />
       </Router>

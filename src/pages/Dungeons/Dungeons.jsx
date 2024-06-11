@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import fnFetchWithAuth from "../../api/fnFetchWithAuth";
+import ErrorPage from "../ErrorPage/ErrorPage";
 
 const Dungeons = () => {
   const [monsters, setMonsters] = useState([]);
@@ -11,6 +12,7 @@ const Dungeons = () => {
   const controllerRef = useRef(null);
   const currentMonsterRef = useRef(null);
   const intervalRef = useRef(null);
+  const isAuthenticated = localStorage.getItem("access_token") !== null;
 
   const fetchData = async () => {
     try {
@@ -90,7 +92,7 @@ const Dungeons = () => {
     }, 100);
   };
 
-  return (
+  return isAuthenticated ? (
     <div className="absolute grid h-full w-[100vw] grid-cols-1 justify-items-center overflow-y-auto px-[100px] py-[200px] text-center text-yellow-600 lg:grid-cols-3">
       {attackStatus && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85">
@@ -180,6 +182,8 @@ const Dungeons = () => {
         </div>
       ))}
     </div>
+  ) : (
+    <ErrorPage />
   );
 };
 

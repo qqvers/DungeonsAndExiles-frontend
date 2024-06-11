@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import fnFetchWithAuth from "../../api/fnFetchWithAuth";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
+import ErrorPage from "../ErrorPage/ErrorPage";
 const Profile = () => {
   const [players, setPlayers] = useState([]);
   const [createPlayer, setCreatePlayer] = useState(false);
@@ -10,7 +10,7 @@ const Profile = () => {
   const [formData, setFormData] = useState("");
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-
+  const isAuthenticated = localStorage.getItem("access_token") !== null;
   const handleCreatePlayer = (index) => {
     setCreatePlayer(true);
     setSelectedForm(index);
@@ -107,11 +107,11 @@ const Profile = () => {
   const totalPlayers = 4;
   const createPlayerDivs = totalPlayers - players.length;
 
-  return (
+  return isAuthenticated ? (
     <div className="bg-blue ml-24 flex h-full w-full flex-col items-start justify-center text-white 2xl:ml-0 2xl:items-center">
       <div className="customShadow mb-36 h-[610px] w-[300px] overflow-hidden rounded-lg bg-black/90">
         <h1 className="py-4 text-center text-2xl text-yellow-500">
-          Your players:
+          Select your player:
         </h1>
         {players.map((player) => (
           <div
@@ -174,6 +174,8 @@ const Profile = () => {
         ))}
       </div>
     </div>
+  ) : (
+    <ErrorPage />
   );
 };
 

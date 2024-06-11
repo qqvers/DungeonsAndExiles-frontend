@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import fnFetchWithAuth from "../../api/fnFetchWithAuth";
+import { useLogout } from "../../hooks/useLogout";
+import ErrorPage from "../ErrorPage/ErrorPage";
 
 const Account = () => {
-  const [user, setUser] = useState({});
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
+  const logout = useLogout();
+  const isAuthenticated = localStorage.getItem("access_token") !== null;
 
   const validateForm = () => {
     const newErrors = {};
@@ -45,7 +48,6 @@ const Account = () => {
       const response = await fnFetchWithAuth(`/users/${userId}`);
       if (response.ok) {
         const data = await response.json();
-        setUser(data);
         setFormData(data);
       }
     } catch (error) {
@@ -67,11 +69,11 @@ const Account = () => {
         body: JSON.stringify(formData),
       });
       if (response.ok) {
-        const data = await response.text();
-        console.log(data);
         setMessage("User updated successfully");
         setErrors({});
         fetchUser();
+      } else if (response.status === 405) {
+        setErrors({ deleteError: "You cannot update the demo account." });
       } else {
         const errorData = await response.json();
         setErrors(errorData);
@@ -88,8 +90,12 @@ const Account = () => {
         method: "DELETE",
       });
       if (response.ok) {
-        setMessage("User deleted successfully");
-        // add logic to logout
+        if (response.status === 200) {
+          setErrors({ deleteError: "You cannot delete the demo account." });
+        } else {
+          setMessage("User deleted successfully");
+          logout();
+        }
       } else {
         const errorData = await response.json();
         setMessage("");
@@ -104,7 +110,7 @@ const Account = () => {
     fetchUser();
   }, []);
 
-  return (
+  return isAuthenticated ? (
     <div className="flex h-full w-full items-center justify-start text-yellow-500 2xl:justify-center">
       <div className="customShadow ml-10 flex h-[700px] w-[400px] flex-col rounded-lg bg-black/90">
         <h1 className="pt-8 text-center text-3xl">Account settings</h1>
@@ -182,6 +188,8 @@ const Account = () => {
         )}
       </div>
     </div>
+  ) : (
+    <ErrorPage />
   );
 };
 

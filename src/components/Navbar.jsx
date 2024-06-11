@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router";
 import { NavLink } from "react-router-dom";
+import { useLogout } from "../hooks/useLogout";
 
 const Navbar = () => {
-  const { pathname } = useLocation();
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
+  const logout = useLogout();
+  const isAuthenticated = localStorage.getItem("access_token") !== null;
+  const isSelectedPlayer = localStorage.getItem("selectedPlayerId") !== null;
 
   const selectedOptionStyles =
     "block rounded-md px-3 py-2 font-medium text-base bg-gray-700 text-white";
   const unselectedOptionStyles =
     "block rounded-md px-3 py-2 font-medium text-base text-gray-300 hover:bg-gray-800 hover:text-white";
   const logoutStyles =
-    "block rounded-md px-3 py-2 font-medium text-base text-gray-300 hover:text-red-500 hover:bg-gray-800";
+    "block rounded-md px-3 py-2 cursor-pointer font-medium text-base text-gray-300 hover:text-red-500 hover:bg-gray-800";
 
   const handleClickOutside = (event) => {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -29,7 +31,7 @@ const Navbar = () => {
 
   return (
     <>
-      {String(pathname) !== "/" && (
+      {isAuthenticated && (
         <nav className="fixed z-50 bg-black/90 md:w-[1300px] xl:w-[1600px] 2xl:w-[1920px]">
           <div className="max-w-7xl px-2 lg:px-8 2xl:mx-auto 2xl:px-6">
             <div className="relative flex h-16 items-start justify-between 2xl:items-center">
@@ -49,6 +51,7 @@ const Navbar = () => {
                     >
                       Account
                     </NavLink>
+
                     <NavLink
                       to="/profile"
                       className={({ isActive }) =>
@@ -57,22 +60,30 @@ const Navbar = () => {
                     >
                       Profile
                     </NavLink>
-                    <NavLink
-                      to="/character"
-                      className={({ isActive }) =>
-                        isActive ? selectedOptionStyles : unselectedOptionStyles
-                      }
-                    >
-                      Character
-                    </NavLink>
-                    <NavLink
-                      to="/dungeons"
-                      className={({ isActive }) =>
-                        isActive ? selectedOptionStyles : unselectedOptionStyles
-                      }
-                    >
-                      Dungeons
-                    </NavLink>
+                    {isSelectedPlayer && (
+                      <NavLink
+                        to="/character"
+                        className={({ isActive }) =>
+                          isActive
+                            ? selectedOptionStyles
+                            : unselectedOptionStyles
+                        }
+                      >
+                        Character
+                      </NavLink>
+                    )}
+                    {isSelectedPlayer && (
+                      <NavLink
+                        to="/dungeons"
+                        className={({ isActive }) =>
+                          isActive
+                            ? selectedOptionStyles
+                            : unselectedOptionStyles
+                        }
+                      >
+                        Dungeons
+                      </NavLink>
+                    )}
                     <NavLink
                       to="/Leaderboard"
                       className={({ isActive }) =>
@@ -84,12 +95,12 @@ const Navbar = () => {
                   </div>
                 </div>
               </div>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 2xl:static 2xl:inset-auto 2xl:ml-6 2xl:pr-0">
+              <div className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-2 2xl:static 2xl:inset-auto 2xl:ml-6 2xl:pr-0">
                 <div className="relative ml-3 hidden 2xl:block">
                   <div>
-                    <NavLink to="/" className={logoutStyles}>
+                    <div onClick={logout} className={logoutStyles}>
                       Logout
-                    </NavLink>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -150,9 +161,9 @@ const Navbar = () => {
                   >
                     Leaderboard
                   </NavLink>
-                  <NavLink to="/" className={logoutStyles}>
+                  <div onClick={logout} className={logoutStyles}>
                     Logout
-                  </NavLink>
+                  </div>
                 </>
               )}
             </div>

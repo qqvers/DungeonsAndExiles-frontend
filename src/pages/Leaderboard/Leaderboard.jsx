@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import fnFetchWithAuth from "../../api/fnFetchWithAuth";
-
+import ErrorPage from "../ErrorPage/ErrorPage";
 const Leaderboard = () => {
   const [players, setPlayers] = useState([]);
-
+  const isAuthenticated = localStorage.getItem("access_token") !== null;
   const fetchData = async () => {
     try {
       const response = await fnFetchWithAuth("/players");
@@ -20,7 +20,7 @@ const Leaderboard = () => {
     fetchData();
   }, []);
 
-  return (
+  return isAuthenticated ? (
     <div className="flex h-[800px] w-fit flex-col justify-center pt-36 2xl:w-full 2xl:items-center">
       <div className="customShadow z-10 mb-[600px] ml-6 rounded-md bg-black p-2 text-3xl font-bold text-yellow-500">
         <span className="cursor-default">Leaderboard</span>
@@ -43,6 +43,8 @@ const Leaderboard = () => {
         ))}
       </div>
     </div>
+  ) : (
+    <ErrorPage />
   );
 };
 

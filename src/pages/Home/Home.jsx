@@ -4,13 +4,14 @@ import { jwtDecode } from "jwt-decode";
 
 const Home = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const defaultValues = {
+  const [loading, setLoading] = useState(false);
+  const getDefaultValues = (isLogin) => ({
     name: "",
-    email: "",
-    password: "",
+    email: isLogin ? "john@doe.com" : "",
+    password: isLogin ? "johndoe" : "",
     repeatPassword: "",
-  };
-  const [formData, setFormData] = useState(defaultValues);
+  });
+  const [formData, setFormData] = useState(getDefaultValues(isLogin));
   const [errors, setErrors] = useState({});
   const [created, setCreated] = useState(false);
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -21,8 +22,8 @@ const Home = () => {
   };
 
   const handleForm = () => {
-    setIsLogin(!isLogin);
-    setFormData(defaultValues);
+    setIsLogin((prevState) => !prevState);
+    setFormData(getDefaultValues(!isLogin));
     setCreated(false);
     setErrors({});
   };
@@ -34,21 +35,27 @@ const Home = () => {
         !formData.name ||
         formData.name.length < 2 ||
         formData.name.length > 20
-      )
+      ) {
         newErrors.name = "Name must be between 2 and 20 characters";
+      }
     }
 
-    if (formData.email.length < 5 || formData.email.length > 30)
+    if (formData.email.length < 5 || formData.email.length > 30) {
       newErrors.email = "Email address must be between 5 and 30 characters";
+    }
 
     if (
       !formData.password ||
       formData.password.length < 5 ||
       formData.password.length > 20
-    )
+    ) {
       newErrors.password = "Password must be between 5 and 20 characters";
-    if (!isLogin && formData.password !== formData.repeatPassword)
+    }
+
+    if (!isLogin && formData.password !== formData.repeatPassword) {
       newErrors.repeatPassword = "Passwords do not match";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -56,57 +63,63 @@ const Home = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      const response = await fetch(
-        apiUrl + (isLogin ? "/users/login" : "/users/register"),
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+      try {
+        setLoading(true);
+        var response = await fetch(
+          apiUrl + (isLogin ? "/users/login" : "/users/register"),
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: formData.email,
+              password: formData.password,
+              ...(isLogin ? {} : { name: formData.name }),
+            }),
           },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-            ...(isLogin ? {} : { name: formData.name }),
-          }),
-        },
-      );
-      const data = await response.json();
-      if (response.ok && isLogin) {
-        localStorage.setItem("access_token", data.token.token);
-        localStorage.setItem("refresh_token", data.refreshToken);
-        const decodedToken = jwtDecode(data.token.token);
-        const userId = decodedToken.sub;
-        localStorage.setItem("userId", userId);
-        navigate("/profile");
-      } else if (response.ok && !isLogin) {
-        setCreated(true);
-        setFormData(defaultValues);
-      } else {
-        switch (response.statusText) {
-          case "Unauthorized":
+        );
+
+        const data = await response.json();
+
+        if (response.ok && isLogin) {
+          localStorage.setItem("access_token", data.token.token);
+          localStorage.setItem("refresh_token", data.refreshToken);
+          const decodedToken = jwtDecode(data.token.token);
+          const userId = decodedToken.sub;
+          localStorage.setItem("userId", userId);
+          navigate("/profile");
+        } else if (response.ok && !isLogin) {
+          setCreated(true);
+          setFormData(getDefaultValues(isLogin));
+        }
+      } catch (error) {
+        switch (response.status) {
+          case 401:
             setErrors({
               server: "Invalid email or password",
             });
             break;
-          case "Conflict":
+          case 409:
             setErrors({
               server: "User already exists",
             });
             break;
           default:
-            console.error("Failed to fetch data: ", response.statusText);
             setErrors({
-              server: response.statusText,
+              server: "An unexpected error occurred",
             });
             break;
         }
+      } finally {
+        setLoading(false);
       }
     }
   };
 
   return (
     <div className="relative py-48 sm:mx-auto sm:max-w-xl">
-      <div className="relative mx-8 rounded-3xl bg-black/90 px-4 py-10 shadow sm:p-10 md:mx-0">
+      <div className="relative mx-5 w-[400px] rounded-3xl bg-black/90 px-4 py-10 shadow sm:p-10 md:mx-0 2xl:w-full">
         <div className="mx-auto max-w-md text-white">
           <h2 className="text-center text-2xl font-semibold">
             {isLogin ? "Login" : "Sign up"}
@@ -204,6 +217,7 @@ const Home = () => {
               <button
                 className="w-full rounded-lg border-2 border-white bg-black px-4 py-2 text-center text-base font-semibold text-white shadow-md transition duration-200 ease-in hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-200"
                 type="submit"
+                disabled={loading}
               >
                 {isLogin ? "Log in" : "Sign up"}
               </button>

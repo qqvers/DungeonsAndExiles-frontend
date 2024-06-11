@@ -9,6 +9,7 @@ import {
 import { FaLock } from "react-icons/fa";
 import fnFetchWithAuth from "../../api/fnFetchWithAuth";
 import classNames from "classnames";
+import ErrorPage from "../ErrorPage/ErrorPage";
 
 const Character = () => {
   const [equipmentItems, setEquipmentItems] = useState([]);
@@ -17,21 +18,22 @@ const Character = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalItem, setModalItem] = useState("");
   const isEqItemRef = useRef(false);
+  const isAuthenticated = localStorage.getItem("access_token") !== null;
 
   const handleElementColor = (item) => {
     const name = item.name.toLowerCase();
     if (name.includes("basic")) {
       return "white";
-    } else if (name.includes("leather")) {
-      return "green-500";
-    } else if (name.includes("iron")) {
-      return "blue-500";
     } else if (name.includes("steel")) {
       return "yellow-500";
     } else if (name.includes("titanium")) {
       return "orange-500";
     } else if (name.includes("diamond")) {
       return "purple-500";
+    } else if (name.includes("leather")) {
+      return "green-500";
+    } else if (name.includes("iron")) {
+      return "blue-500";
     } else {
       return "red-500";
     }
@@ -69,19 +71,35 @@ const Character = () => {
   }, []);
 
   const getItemIcon = (item) => {
-    const color = "text-" + handleElementColor(item);
+    const color = handleElementColor(item);
+    let textColor;
+    if (color === "white") {
+      textColor = "text-white";
+    } else if (color === "orange-500") {
+      textColor = "text-orange-500";
+    } else if (color === "purple-500") {
+      textColor = "text-purple-500";
+    } else if (color === "green-500") {
+      textColor = "text-green-500";
+    } else if (color === "blue-500") {
+      textColor = "text-blue-500";
+    } else if (color === "red-500") {
+      textColor = "text-red-500";
+    } else if (color === "yellow-500") {
+      textColor = "text-yellow-500";
+    }
 
     switch (item.type.toLowerCase()) {
       case "weapon":
-        return <GiBroadsword className={color} size={30} />;
+        return <GiBroadsword className={textColor} size={30} />;
       case "helmet":
-        return <GiCenturionHelmet className={color} size={30} />;
+        return <GiCenturionHelmet className={textColor} size={30} />;
       case "body armor":
-        return <GiAbdominalArmor className={color} size={30} />;
+        return <GiAbdominalArmor className={textColor} size={30} />;
       case "gloves":
-        return <GiGloves className={color} size={30} />;
+        return <GiGloves className={textColor} size={30} />;
       case "boots":
-        return <GiSteeltoeBoots className={color} size={30} />;
+        return <GiSteeltoeBoots className={textColor} size={30} />;
       default:
         return <FaLock className="text-gray-600" size={30} />;
     }
@@ -145,7 +163,7 @@ const Character = () => {
     setModalVisible(false);
   };
 
-  return (
+  return isAuthenticated ? (
     <div className="flex h-full w-full 2xl:justify-center">
       <div className="customShadow mx-8 mt-44 flex h-[800px] w-[440px] flex-col items-center justify-start overflow-hidden rounded-lg bg-black/90">
         <h1 className="pt-4 text-3xl text-yellow-500">{player.name}</h1>
@@ -397,6 +415,8 @@ const Character = () => {
         </div>
       )}
     </div>
+  ) : (
+    <ErrorPage />
   );
 };
 
