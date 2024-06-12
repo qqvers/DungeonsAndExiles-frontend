@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
@@ -16,6 +16,13 @@ const Home = () => {
   const [created, setCreated] = useState(false);
   const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
+  const isAuthenticated = localStorage.getItem("access_token") !== null;
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/profile");
+    }
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -215,7 +222,7 @@ const Home = () => {
             )}
             <div className="mt-5">
               <button
-                className="w-full rounded-lg border-2 border-white bg-black px-4 py-2 text-center text-base font-semibold text-white shadow-md transition duration-200 ease-in hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-200"
+                className={`${loading ? "cursor-not-allowed border-gray-600 text-gray-600" : "border-white text-white hover:bg-white hover:text-black"} w-full rounded-lg border-2 bg-black px-4 py-2 text-center text-base font-semibold shadow-md transition duration-200 ease-in focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-blue-200`}
                 type="submit"
                 disabled={loading}
               >
